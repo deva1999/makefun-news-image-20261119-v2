@@ -64,6 +64,14 @@ const writtenHash = sha256Hex(written);
 if (writtenHash !== sourceHash) {
   fail("written file hash does not match the source image");
 }
+// Re-parse the written copy's header as well: the file on disk must
+// still describe the same image the gate checks would see.
+const writtenDims = pngDimensions(written);
+if (writtenDims.width !== width || writtenDims.height !== height) {
+  fail(
+    `written file is ${writtenDims.width}x${writtenDims.height}, expected ${width}x${height}`,
+  );
+}
 console.log(
   `wrote ${targetPath}: ${width}x${height} PNG, ${written.length} bytes, sha256 ${writtenHash}`,
 );
